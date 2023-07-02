@@ -12,6 +12,8 @@
   "packageManager": "pnpm@8.6.1",
   "name": "upload-wizard",
   "devDependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@commitlint/config-conventional": "^17.6.6",
     "@tsconfig/node18": "^18.2.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.19",
