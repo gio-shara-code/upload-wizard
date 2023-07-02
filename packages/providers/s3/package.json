@@ -1,0 +1,19 @@
+{
+  "name": "@providers/s3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "",
+    "build": "tsc",
+    "start": "tsc && node ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "eslint-config-typescript": "workspace:*"
+  }
+}
