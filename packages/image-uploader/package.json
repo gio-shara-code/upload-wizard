@@ -17,9 +17,13 @@
     "@tsconfig/node18": "^18.2.0",
     "@types/node": "18",
     "concurrently": "^8.2.0",
+    "eslint-config-typescript": "workspace:*",
     "husky": "^8.0.3",
     "nodemon": "^2.0.22",
     "tsconfig": "workspace:*",
-    "eslint-config-typescript": "workspace:*"
+    "@providers/s3": "workspace:*"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.32.0"
   }
 }
