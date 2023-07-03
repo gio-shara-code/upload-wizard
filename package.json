@@ -25,5 +25,9 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "znv": "^0.3.2",
+    "zod": "^3.21.4"
   }
 }

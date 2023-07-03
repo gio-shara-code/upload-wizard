@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      znv:
+        specifier: ^0.3.2
+        version: 0.3.2(zod@3.21.4)
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.6.6
@@ -23,9 +30,6 @@ importers:
       '@types/node':
         specifier: ^18.16.19
         version: 18.16.19
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
       concurrently:
         specifier: ^8.2.0
         version: 8.2.0
@@ -2622,6 +2626,10 @@ packages:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: true
 
+  /colorette@2.0.20:
+    resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
+    dev: false
+
   /compare-func@2.0.0:
     resolution: {integrity: sha512-zHig5N+tPWARooBnb0Zx1MFcdfpyJrfTJ3Y5L+IFvUm8rM74hHz66z0gw0x4tijh5CorKkKUCnW82R2vmpeCRA==}
     dependencies:
@@ -4969,3 +4977,16 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /znv@0.3.2(zod@3.21.4):
+    resolution: {integrity: sha512-dyQ2gfDe5RgEL7hKue1dFswmy4vzb/SRnLLRHaHNm39JteKstFs47I0nevlEa3oOWNMJ7XB4V1l/IdcLezPwoA==}
+    peerDependencies:
+      zod: ^3.11.6
+    dependencies:
+      colorette: 2.0.20
+      zod: 3.21.4
+    dev: false
+
+  /zod@3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
