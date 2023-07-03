@@ -1,19 +1,13 @@
-import chalk from 'chalk'
+import { parseEnv } from 'znv'
+import { z } from 'zod'
 
 const { S3_BUCKET_NAME, S3_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
-    process.env
-
-if (!S3_REGION) console.log(chalk.yellow('warning: S3_REGION not set'))
-if (!S3_BUCKET_NAME)
-    console.log(chalk.yellow('warning: S3_BUCKET_NAME not set'))
-if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
-    console.log(
-        chalk.red(
-            'error: AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY or both not set'
-        )
-    )
-    process.exit(-1)
-}
+    parseEnv(process.env, {
+        S3_BUCKET_NAME: z.string().optional(),
+        S3_REGION: z.enum(['eu-central-1']).default('eu-central-1'),
+        AWS_ACCESS_KEY_ID: z.string(),
+        AWS_SECRET_ACCESS_KEY: z.string(),
+    })
 
 export default Object.freeze({
     s3: {
