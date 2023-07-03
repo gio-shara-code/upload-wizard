@@ -1,2 +1,1 @@
-console.log('hello world')
-export class S3Provider {}
+export * from './provider'
