@@ -1,6 +1,6 @@
 {
   "extends": "tsconfig/node18.json",
-  "include": ["./src",  "__test__"],
+  "include": ["./src"],
   "compilerOptions": {
     "outDir": "dist"
   }
