@@ -1,6 +1,6 @@
 import { StorageServiceProvider } from './storage-service-provider'
 import { DBFileProvider } from './db-file-provider'
-import { uuidV4 } from "./utils/uuid";
+import { uuidV4 } from './utils/uuid'
 
 import { DBFileStatus, FileStatus, UploadWizardConfig } from './types'
 
@@ -51,10 +51,11 @@ export class UploadWizard<ID = DefaultID> {
     }
 
     async confirmUpload(imageId: ID, confirmToken: string): Promise<void> {
-        const confirmTokenIsValid = await this.dbFileProvider.validateConfirmToken(
-            imageId,
-            confirmToken
-        )
+        const confirmTokenIsValid =
+            await this.dbFileProvider.validateConfirmToken(
+                imageId,
+                confirmToken
+            )
 
         if (!confirmTokenIsValid) {
             // TODO: Throw a custom error
