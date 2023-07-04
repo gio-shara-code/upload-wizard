@@ -97,6 +97,12 @@ export class UploadWizard<ID = DefaultID> {
     }
 
     async delete(fileId: ID): Promise<void> {
+        const fileExistsInDB = await this.dbFileProvider.exists(fileId)
+
+        if (!fileExistsInDB) {
+            throw new Error('Image not found')
+        }
+
         await this.dbFileProvider.deleteEntry(fileId)
         return this.storageServiceProvider.delete(fileId)
     }
