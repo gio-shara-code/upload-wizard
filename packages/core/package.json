@@ -21,6 +21,7 @@
     "eslint-config-typescript": "workspace:*",
     "husky": "^8.0.3",
     "nodemon": "^2.0.22",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "test-config": "workspace:*"
   }
 }
