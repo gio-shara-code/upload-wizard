@@ -1,159 +1,103 @@
-type Expires = number;
+import { StorageServiceProvider } from './storage-service-provider'
+import { DBFileProvider } from './db-file-provider'
+import { uuidV4 } from "./utils/uuid";
 
-interface RequestSignedUploadUrlResponse {
-    url: string;
-    expires: Expires;
-}
+import { DBFileStatus, FileStatus, UploadWizardConfig } from './types'
 
+import type { DefaultID, Token, MediaFile, SignedUploadUrl } from './types'
 
-const ImageProviderImageStatus = {
-    UPLOADED: "UPLOADED",
-    PROCESSED: "PROCESSED",
-    NOT_FOUND: "NOT_FOUND",
-} as const;
+export class UploadWizard<ID = DefaultID> {
+    private storageServiceProvider: StorageServiceProvider<ID>
+    private dbFileProvider: DBFileProvider<ID>
+    private readonly idGenerator: () => ID
 
-type ImageProviderImageStatus = keyof typeof ImageProviderImageStatus;
+    constructor(config: UploadWizardConfig<ID>) {
+        this.storageServiceProvider = config.storageServiceProvider
+        this.dbFileProvider = config.dbFileProvider
 
-const DbImageStatus = {
-    REQUESTED: "REQUESTED",
-    UPLOADED: "UPLOADED",
-} as const;
-
-type DbImageStatus = keyof typeof DbImageStatus;
-
-interface ImageProviderImageResponse<ID> {
-    status: ImageProviderImageStatus;
-    /* Is `undefined` as long as the image status is not processed */
-    url?: string;
-}
-
-interface ImageResponse<ID> {
-    status: ImageProviderImageStatus | DbImageStatus;
-    /* Is `undefined` as long as the image status is not processed */
-    url?: string;
-}
-
-abstract class ImageProvider<ID> {
-    // TODO: Maybe add metaData to this method
-    abstract requestSignedUploadUrl(imageId: ID): Promise<RequestSignedUploadUrlResponse>
-
-    abstract confirmUpload(imageId: ID, confirmToken: string): Promise<void>
-
-    abstract getImage(imageId: ID): Promise<ImageProviderImageResponse<ID>>
-
-    abstract deleteImage(imageId: ID): Promise<void>
-}
-
-type DefaultID = string;
-
-type Token = string;
-
-
-interface SignedUploadUrl<ID> {
-    id: ID,
-    confirmToken: Token,
-    url: string,
-    expires: Expires,
-}
-
-interface CreateImageInput<ID> {
-    id: ID;
-    confirmToken: Token;
-    status: DbImageStatus;
-    // metaData: ImageMetaData;
-}
-
-abstract class DbProvider<ID> {
-    abstract createImage(input: CreateImageInput<ID>): Promise<ID>
-
-    abstract updateImageStatus(imageId: ID, status: DbImageStatus): Promise<void>
-
-    abstract validateConfirmToken(imageId: ID, confirmToken: string): Promise<void>
-
-    abstract deleteImage(imageId: ID): Promise<void>
-
-    abstract imageExists(imageId: ID): Promise<boolean>
-}
-
-class ImageUpload<ID = DefaultID> {
-    private imageProvider: ImageProvider<ID>;
-    private dbProvider: DbProvider<ID>;
-    private readonly idGenerator: () => ID;
-
-    constructor(imageProvider: ImageProvider<ID>, dbProvider: DbProvider<ID>, customIdGenerator?: () => ID) {
-        this.imageProvider = imageProvider;
-        this.dbProvider = dbProvider;
-
-        if (!customIdGenerator) {
+        if (!config.customIdGenerator) {
             this.idGenerator = () => {
-                return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) as ID;
-            };
+                return uuidV4() as ID
+            }
         } else {
-            this.idGenerator = customIdGenerator;
+            this.idGenerator = config.customIdGenerator
         }
     }
 
-    tokenGenerator(): Token {
-        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    private tokenGenerator(): Token {
+        return uuidV4()
     }
 
     async signedUploadUrl(): Promise<SignedUploadUrl<ID>> {
-        const id = this.idGenerator();
+        const id = this.idGenerator()
 
-        const {url, expires} = await this.imageProvider.requestSignedUploadUrl(id);
+        const { url, expiry } =
+            await this.storageServiceProvider.requestSignedUploadUrl(id, 3600)
 
-        const confirmToken = this.tokenGenerator();
+        const confirmToken = this.tokenGenerator()
 
-        await this.dbProvider.createImage({
+        await this.dbFileProvider.createEntry({
             id,
             confirmToken,
-            status: DbImageStatus.REQUESTED,
-        });
+            status: DBFileStatus.REQUESTED,
+        })
 
         return {
             id,
             confirmToken,
             url,
-            expires,
+            expiry,
         }
     }
 
     async confirmUpload(imageId: ID, confirmToken: string): Promise<void> {
-        const confirmTokenIsValid = this.dbProvider.validateConfirmToken(imageId, confirmToken);
+        const confirmTokenIsValid = await this.dbFileProvider.validateConfirmToken(
+            imageId,
+            confirmToken
+        )
 
         if (!confirmTokenIsValid) {
             // TODO: Throw a custom error
-            throw new Error("Invalid confirm token");
+            throw new Error('Invalid confirm token')
         }
 
-        await this.dbProvider.updateImageStatus(imageId, DbImageStatus.UPLOADED);
+        const { status } = await this.storageServiceProvider.getData(imageId)
 
-        return this.imageProvider.confirmUpload(imageId, confirmToken);
+        if (status === FileStatus.NOT_FOUND) {
+            throw new Error('File not found')
+        }
+
+        await this.dbFileProvider.updateStatus(imageId, DBFileStatus.UPLOADED)
     }
 
-    async getImage(imageId: ID): Promise<ImageResponse<ID>> {
-        const { url, status } = await this.imageProvider.getImage(imageId);
+    async getData(fileId: ID): Promise<MediaFile<ID>> {
+        const { status, variants } = await this.storageServiceProvider.getData(
+            fileId
+        )
 
-        if (status === ImageProviderImageStatus.NOT_FOUND) {
-            const imageExistsInDb = this.dbProvider.imageExists(imageId)
+        if (status === FileStatus.NOT_FOUND) {
+            const imageExistsInDB = await this.dbFileProvider.exists(fileId)
 
-            if (!imageExistsInDb) {
-                throw new Error("Image not found");
+            if (!imageExistsInDB) {
+                throw new Error('Image not found')
             }
 
             return {
-                status: DbImageStatus.UPLOADED,
+                id: fileId,
+                status: DBFileStatus.REQUESTED,
+                variants: undefined,
             }
         }
 
         return {
-            url,
-            status: status
+            id: fileId,
+            status,
+            variants,
         }
     }
 
-    async deleteImage(imageId: ID): Promise<void> {
-        await this.dbProvider.deleteImage(imageId)
-        return this.imageProvider.deleteImage(imageId);
+    async delete(fileId: ID): Promise<void> {
+        await this.dbFileProvider.deleteEntry(fileId)
+        return this.storageServiceProvider.delete(fileId)
     }
 }
