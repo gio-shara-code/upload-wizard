@@ -2,21 +2,64 @@ import { StorageServiceProvider } from '../src/storage-service-provider'
 import { DBFileStatus, FileStatus } from '../src/types'
 import { DBFileProvider } from '../src/db-file-provider'
 
-type FakeStorageService = {
-    files: {
-        id: string
-        url?: string
-        uploaded: boolean
-    }[]
+class StorageAdapter<T extends { id: string }> {
+    storage: T[] = []
+
+    reset = () => {
+        this.storage = []
+    }
+
+    add = (element: T) => {
+        this.storage.push(element)
+    }
+
+    find = (id) => {
+        return this.storage.find((element) => element.id === id)
+    }
+
+    update = (id, data: Partial<Omit<T, 'id'>>) => {
+        const element = this.find(id)
+
+        if (!element) {
+            return
+        }
+
+        this.storage = this.storage.map((element) => {
+            if (element.id === id) {
+                return {
+                    ...element,
+                    ...data,
+                }
+            }
+
+            return element
+        })
+    }
+
+    delete = (id) => {
+        this.storage = this.storage.filter((element) => element.id !== id)
+    }
 }
 
-export const fakeStorageService: FakeStorageService = {
-    files: [],
+type FakeStorageServiceFile = {
+    id: string
+    url?: string
+    uploaded: boolean
 }
+
+export class FakeStorageService extends StorageAdapter<FakeStorageServiceFile> {}
 
 export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
+    storage: FakeStorageService
+
+    constructor(fakeStorage: FakeStorageService) {
+        super();
+
+        this.storage = fakeStorage
+    }
+
     requestSignedUploadUrl(fileId, expiresIn) {
-        fakeStorageService.files.push({
+        this.storage.add({
             id: fileId,
             uploaded: false,
         })
@@ -29,9 +72,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     }
 
     getData(fileId) {
-        const data = fakeStorageService.files.find(
-            (file) => file.id === fileId
-        )
+        const data = this.storage.find(fileId)
 
         const fileExists = !!data
 
@@ -61,29 +102,31 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     }
 
     delete(fileId) {
-        fakeStorageService.files = fakeStorageService.files.filter(
-            (file) => file.id !== fileId
-        )
+        this.storage.delete(fileId)
 
         return Promise.resolve()
     }
 }
 
-type FakeDB = {
-    files: {
-        id: string
-        status: DBFileStatus
-        confirmToken?: string
-    }[]
+type FakeDBFile = {
+    id: string
+    status: DBFileStatus
+    confirmToken?: string
 }
 
-export const fakeDB: FakeDB = {
-    files: [],
-}
+export class FakeDB extends StorageAdapter<FakeDBFile> {}
 
 export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
+    storage: FakeDB
+
+    constructor(fakeStorage: FakeDB) {
+        super();
+
+        this.storage = fakeStorage
+    }
+
     createEntry(input) {
-        fakeDB.files.push({
+        this.storage.add({
             id: input.id,
             status: input.status,
             confirmToken: input.confirmToken,
@@ -93,28 +136,19 @@ export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     }
 
     updateStatus(fileId, status) {
-        fakeDB.files = fakeDB.files.map((file) => {
-            if (file.id === fileId) {
-                return {
-                    ...file,
-                    status,
-                }
-            }
-
-            return file
-        })
+        this.storage.update(fileId, { status })
 
         return Promise.resolve()
     }
 
     deleteEntry(fileId) {
-        fakeDB.files = fakeDB.files.filter((file) => file.id !== fileId)
+        this.storage.delete(fileId)
 
         return Promise.resolve()
     }
 
     validateConfirmToken(fileId, confirmToken) {
-        const file = fakeDB.files.find((file) => file.id === fileId)
+        const file = this.storage.find(fileId)
 
         if (!file) {
             return Promise.resolve(false)
@@ -130,7 +164,7 @@ export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     }
 
     exists(fileId) {
-        const file = fakeDB.files.find((file) => file.id === fileId)
+        const file = this.storage.find(fileId)
 
         return Promise.resolve(!!file)
     }
