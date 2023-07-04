@@ -21,36 +21,36 @@ sequenceDiagram
     activate BE
     
     BE->>DB: Create File Entry (status = requested)
-    DB-->>BE: ‎
+%%    DB-->>BE: ‎
 
     BE->>SP: Request Signed Upload URL
-    SP-->>BE: ‎
+%%    SP-->>BE: ‎
     
     BE-->>FE: Return Signed Upload URL + confirmToken
     
     deactivate BE
     
     FE->>SP: Upload File (using signed URL)
-    SP-->>FE: ‎
+%%    SP-->>FE: ‎
     
     FE->>BE: Confirm Upload (confirmToken)
     
     activate BE
     
     BE->>DB: Get confirmToken
-    DB-->>BE: ‎
+%%    DB-->>BE: ‎
     
     BE->>BE: Verify confirmToken
     
     BE->>SP: Request file
-    SP-->>BE: ‎
+%%    SP-->>BE: ‎
     
     BE->>BE: Verify that file has been uploaded
     
     BE->>DB: Update File Entry (status = uploaded)
-    DB-->>BE: ‎
+%%    DB-->>BE: ‎
     
-    BE-->>FE: ‎
+%%    BE-->>FE: ‎
     
     deactivate BE
 
@@ -61,12 +61,12 @@ sequenceDiagram
         activate BE
         
         BE->>DB: Get File Entry
-        DB-->>BE: ‎
+%%        DB-->>BE: ‎
         
         BE->>BE: Verify that file exists
         
         BE->>SP: Request file
-        SP-->>BE: ‎
+%%        SP-->>BE: ‎
         
         BE->>FE: Return file
         
