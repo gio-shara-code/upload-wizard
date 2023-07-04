@@ -34,7 +34,6 @@ sequenceDiagram
     SP-->>FE: ‎
     
     FE->>BE: Confirm Upload (confirmToken)
-    BE-->>FE: ‎
     
     activate BE
     
