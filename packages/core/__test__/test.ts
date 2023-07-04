@@ -183,7 +183,7 @@ describe('UploadWizard', () => {
 
             it('should throw an error if the image was not found', async () => {
                 await expect(uploadWizard.delete('some-id')).rejects.toThrow(
-                    'Image not found'
+                    'File not found'
                 )
             })
         })
