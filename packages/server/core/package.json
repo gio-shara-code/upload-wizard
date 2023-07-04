@@ -1,9 +1,9 @@
 {
-  "name": "@upload-wizard/core",
+  "name": "@server/core",
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/index.js\"",
@@ -23,6 +23,9 @@
     "husky": "^8.0.3",
     "nodemon": "^2.0.22",
     "tsconfig": "workspace:*",
-    "test-config": "workspace:*"
+    "test-config": "workspace:*",
+    "shared-types": "workspace:*",
+    "@providers/interface": "workspace:*",
+    "@adapters/interface": "workspace:*"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "@providers/interface",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint-config-typescript": "workspace:*",
+    "tsconfig": "workspace:*",
+    "shared-types": "workspace:*"
+  }
+}
