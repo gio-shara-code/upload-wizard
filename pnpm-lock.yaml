@@ -61,35 +61,17 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6
 
-  packages/core:
+  packages/adapter/interface:
     devDependencies:
-      '@providers/s3':
-        specifier: workspace:*
-        version: link:../providers/s3
-      '@tsconfig/node18':
-        specifier: ^18.2.0
-        version: 18.2.0
-      '@types/node':
-        specifier: '18'
-        version: 18.16.19
-      concurrently:
-        specifier: ^8.2.0
-        version: 8.2.0
       eslint-config-typescript:
         specifier: workspace:*
-        version: link:../eslint-config-typescript
-      husky:
-        specifier: ^8.0.3
-        version: 8.0.3
-      nodemon:
-        specifier: ^2.0.22
-        version: 2.0.22
-      test-config:
+        version: link:../../eslint-config-typescript
+      shared-types:
         specifier: workspace:*
-        version: link:../test-config
+        version: link:../../types
       tsconfig:
         specifier: workspace:*
-        version: link:../tsconfig
+        version: link:../../tsconfig
 
   packages/eslint-config-typescript:
     devDependencies:
@@ -103,6 +85,18 @@ importers:
         specifier: ^16.3.1
         version: 16.3.1
 
+  packages/providers/interface:
+    devDependencies:
+      eslint-config-typescript:
+        specifier: workspace:*
+        version: link:../../eslint-config-typescript
+      shared-types:
+        specifier: workspace:*
+        version: link:../../types
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../tsconfig
+
   packages/providers/s3:
     dependencies:
       '@aws-sdk/client-s3':
@@ -111,6 +105,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.363.0
         version: 3.363.0
+      '@providers/interface':
+        specifier: workspace:*
+        version: link:../interface
     devDependencies:
       eslint-config-typescript:
         specifier: workspace:*
@@ -119,9 +116,57 @@ importers:
         specifier: workspace:*
         version: link:../../tsconfig
 
+  packages/server/core:
+    devDependencies:
+      '@adapters/interface':
+        specifier: workspace:*
+        version: link:../../adapter/interface
+      '@providers/interface':
+        specifier: workspace:*
+        version: link:../../providers/interface
+      '@providers/s3':
+        specifier: workspace:*
+        version: link:../../providers/s3
+      '@tsconfig/node18':
+        specifier: ^18.2.0
+        version: 18.2.0
+      '@types/node':
+        specifier: '18'
+        version: 18.16.19
+      concurrently:
+        specifier: ^8.2.0
+        version: 8.2.0
+      eslint-config-typescript:
+        specifier: workspace:*
+        version: link:../../eslint-config-typescript
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      nodemon:
+        specifier: ^2.0.22
+        version: 2.0.22
+      shared-types:
+        specifier: workspace:*
+        version: link:../../types
+      test-config:
+        specifier: workspace:*
+        version: link:../../test-config
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../tsconfig
+
   packages/test-config: {}
 
   packages/tsconfig: {}
+
+  packages/types:
+    devDependencies:
+      eslint-config-typescript:
+        specifier: workspace:*
+        version: link:../eslint-config-typescript
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
 
 packages:
 

@@ -1,4 +1,8 @@
-import { DBFileStatus, FileStatus } from '../src/types'
+import { StorageServiceFileStatus } from '@providers/interface'
+import { DBFileStatus } from '@adapters/interface'
+
+import { randomInt } from 'node:crypto'
+
 import { UploadWizard } from '../src'
 import {
     FakeDB,
@@ -6,8 +10,6 @@ import {
     FakeStorageService,
     FakeStorageServiceProvider,
 } from './fakes'
-
-import { randomInt } from 'node:crypto'
 
 describe('UploadWizard', () => {
     const fakeDB = new FakeDB()
@@ -18,7 +20,9 @@ describe('UploadWizard', () => {
         fakeStorageService.reset()
     })
 
-    const storageServiceProvider = new FakeStorageServiceProvider(fakeStorageService)
+    const storageServiceProvider = new FakeStorageServiceProvider(
+        fakeStorageService
+    )
     const dbFileProvider = new FakeDBFileProvider(fakeDB)
 
     const customIdGenerator = () => randomInt(2 ^ 48)
@@ -148,7 +152,7 @@ describe('UploadWizard', () => {
 
                 expect(data).toEqual({
                     id,
-                    status: FileStatus.PROCESSED,
+                    status: StorageServiceFileStatus.PROCESSED,
                     variants: url,
                 })
             })
