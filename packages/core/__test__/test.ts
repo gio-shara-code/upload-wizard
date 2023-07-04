@@ -32,9 +32,9 @@ describe('UploadWizard', () => {
                 const { id, expiry, confirmToken, url } =
                     await uploadWizard.signedUploadUrl()
 
-                const dbEntry = fakeDB.images.find((image) => image.id === id)
-                const storageServiceEntry = fakeStorageService.images.find(
-                    (image) => image.id === id
+                const dbEntry = fakeDB.files.find((file) => file.id === id)
+                const storageServiceEntry = fakeStorageService.files.find(
+                    (file) => file.id === id
                 )
 
                 expect(dbEntry).toEqual({
@@ -55,15 +55,15 @@ describe('UploadWizard', () => {
                 const { id, confirmToken } =
                     await uploadWizard.signedUploadUrl()
 
-                fakeStorageService.images.find(
-                    (image) => image.id === id
+                fakeStorageService.files.find(
+                    (file) => file.id === id
                 ).uploaded = true
 
                 await uploadWizard.confirmUpload(id, confirmToken)
 
-                const dbEntry = fakeDB.images.find((image) => image.id === id)
-                const storageServiceEntry = fakeStorageService.images.find(
-                    (image) => image.id === id
+                const dbEntry = fakeDB.files.find((file) => file.id === id)
+                const storageServiceEntry = fakeStorageService.files.find(
+                    (file) => file.id === id
                 )
 
                 expect(dbEntry).toEqual({
@@ -100,7 +100,7 @@ describe('UploadWizard', () => {
         describe('getData', () => {
             it('should throw an error if the file was not found', async () => {
                 await expect(uploadWizard.getData('some-id')).rejects.toThrow(
-                    'Image not found'
+                    'File not found'
                 )
             })
 
@@ -120,8 +120,8 @@ describe('UploadWizard', () => {
                 const { id, confirmToken } =
                     await uploadWizard.signedUploadUrl()
 
-                fakeStorageService.images.find(
-                    (image) => image.id === id
+                fakeStorageService.files.find(
+                    (file) => file.id === id
                 ).uploaded = true
 
                 await uploadWizard.confirmUpload(id, confirmToken)
@@ -139,15 +139,15 @@ describe('UploadWizard', () => {
                 const { id, confirmToken } =
                     await uploadWizard.signedUploadUrl()
 
-                fakeStorageService.images.find(
-                    (image) => image.id === id
+                fakeStorageService.files.find(
+                    (file) => file.id === id
                 ).uploaded = true
 
                 await uploadWizard.confirmUpload(id, confirmToken)
 
                 const url = 'https://example.com/image.jpg'
 
-                fakeStorageService.images.find((image) => image.id === id).url =
+                fakeStorageService.files.find((file) => file.id === id).url =
                     url
 
                 const data = await uploadWizard.getData(id)
@@ -161,12 +161,12 @@ describe('UploadWizard', () => {
         })
 
         describe('delete', () => {
-            it('should delete the image from the database and storage service correctly', async () => {
+            it('should delete the file from the database and storage service correctly', async () => {
                 const { id, confirmToken } =
                     await uploadWizard.signedUploadUrl()
 
-                fakeStorageService.images.find(
-                    (image) => image.id === id
+                fakeStorageService.files.find(
+                    (file) => file.id === id
                 ).uploaded = true
 
                 await uploadWizard.confirmUpload(id, confirmToken)
@@ -174,14 +174,14 @@ describe('UploadWizard', () => {
                 await uploadWizard.delete(id)
 
                 expect(
-                    fakeDB.images.find((image) => image.id === id)
+                    fakeDB.files.find((file) => file.id === id)
                 ).toBeUndefined()
                 expect(
-                    fakeStorageService.images.find((image) => image.id === id)
+                    fakeStorageService.files.find((file) => file.id === id)
                 ).toBeUndefined()
             })
 
-            it('should throw an error if the image was not found', async () => {
+            it('should throw an error if the file was not found', async () => {
                 await expect(uploadWizard.delete('some-id')).rejects.toThrow(
                     'File not found'
                 )

@@ -79,7 +79,7 @@ export class UploadWizard<ID = DefaultID> {
             const imageExistsInDB = await this.dbFileProvider.exists(fileId)
 
             if (!imageExistsInDB) {
-                throw new Error('Image not found')
+                throw new Error('File not found')
             }
 
             return {

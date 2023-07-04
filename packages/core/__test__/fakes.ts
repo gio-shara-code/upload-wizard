@@ -3,7 +3,7 @@ import { DBFileStatus, FileStatus } from '../src/types'
 import { DBFileProvider } from '../src/db-file-provider'
 
 type FakeStorageService = {
-    images: {
+    files: {
         id: string
         url?: string
         uploaded: boolean
@@ -11,12 +11,12 @@ type FakeStorageService = {
 }
 
 export const fakeStorageService: FakeStorageService = {
-    images: [],
+    files: [],
 }
 
 export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     requestSignedUploadUrl(fileId, expiresIn) {
-        fakeStorageService.images.push({
+        fakeStorageService.files.push({
             id: fileId,
             uploaded: false,
         })
@@ -29,13 +29,13 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     }
 
     getData(fileId) {
-        const data = fakeStorageService.images.find(
-            (image) => image.id === fileId
+        const data = fakeStorageService.files.find(
+            (file) => file.id === fileId
         )
 
-        const imageExists = !!data
+        const fileExists = !!data
 
-        if (!imageExists) {
+        if (!fileExists) {
             return Promise.resolve({
                 id: fileId,
                 status: FileStatus.NOT_FOUND,
@@ -61,8 +61,8 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     }
 
     delete(fileId) {
-        fakeStorageService.images = fakeStorageService.images.filter(
-            (image) => image.id !== fileId
+        fakeStorageService.files = fakeStorageService.files.filter(
+            (file) => file.id !== fileId
         )
 
         return Promise.resolve()
@@ -70,7 +70,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
 }
 
 type FakeDB = {
-    images: {
+    files: {
         id: string
         status: DBFileStatus
         confirmToken?: string
@@ -78,12 +78,12 @@ type FakeDB = {
 }
 
 export const fakeDB: FakeDB = {
-    images: [],
+    files: [],
 }
 
 export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     createEntry(input) {
-        fakeDB.images.push({
+        fakeDB.files.push({
             id: input.id,
             status: input.status,
             confirmToken: input.confirmToken,
@@ -93,36 +93,36 @@ export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     }
 
     updateStatus(fileId, status) {
-        fakeDB.images = fakeDB.images.map((image) => {
-            if (image.id === fileId) {
+        fakeDB.files = fakeDB.files.map((file) => {
+            if (file.id === fileId) {
                 return {
-                    ...image,
+                    ...file,
                     status,
                 }
             }
 
-            return image
+            return file
         })
 
         return Promise.resolve()
     }
 
     deleteEntry(fileId) {
-        fakeDB.images = fakeDB.images.filter((image) => image.id !== fileId)
+        fakeDB.files = fakeDB.files.filter((file) => file.id !== fileId)
 
         return Promise.resolve()
     }
 
     validateConfirmToken(fileId, confirmToken) {
-        const image = fakeDB.images.find((image) => image.id === fileId)
+        const file = fakeDB.files.find((file) => file.id === fileId)
 
-        if (!image) {
+        if (!file) {
             return Promise.resolve(false)
         }
 
-        const { confirmToken: imageConfirmToken } = image
+        const { confirmToken: uploadConfirmToken } = file
 
-        if (imageConfirmToken === confirmToken) {
+        if (uploadConfirmToken === confirmToken) {
             return Promise.resolve(true)
         } else {
             return Promise.resolve(false)
@@ -130,8 +130,8 @@ export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     }
 
     exists(fileId) {
-        const image = fakeDB.images.find((image) => image.id === fileId)
+        const file = fakeDB.files.find((file) => file.id === fileId)
 
-        return Promise.resolve(!!image)
+        return Promise.resolve(!!file)
     }
 }
