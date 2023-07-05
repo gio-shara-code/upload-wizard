@@ -10,7 +10,7 @@ export * from './types/index.types'
 
 export abstract class StorageServiceProvider<ID> {
     // TODO: Maybe add metaData to this method
-    abstract requestSignedUploadUrl(
+    abstract signedUploadUrl(
         fileId: ID,
         expiresIn: ExpiresIn
     ): Promise<RequestSignedUploadUrlResponse<ID>>
