@@ -50,7 +50,7 @@ class UploadHandler {
         console.log(file)
 
         const res = await fetch(signedURL, {
-            method: 'POST',
+            method: 'PUT',
             signal: this.controller.signal,
             body: file,
         })
