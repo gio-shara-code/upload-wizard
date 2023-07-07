@@ -9,9 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "shared-types": "workspace:*"
+  },
   "devDependencies": {
     "eslint-config-typescript": "workspace:*",
-    "tsconfig": "workspace:*",
-    "shared-types": "workspace:*"
+    "tsconfig": "workspace:*"
   }
 }

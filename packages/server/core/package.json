@@ -14,6 +14,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@providers/interface": "workspace:*",
+    "@adapters/interface": "workspace:*",
+    "shared-types": "workspace:*"
+  },
   "devDependencies": {
     "@providers/s3": "workspace:*",
     "@tsconfig/node18": "^18.2.0",
@@ -23,9 +28,6 @@
     "husky": "^8.0.3",
     "nodemon": "^2.0.22",
     "tsconfig": "workspace:*",
-    "test-config": "workspace:*",
-    "shared-types": "workspace:*",
-    "@providers/interface": "workspace:*",
-    "@adapters/interface": "workspace:*"
+    "test-config": "workspace:*"
   }
 }
