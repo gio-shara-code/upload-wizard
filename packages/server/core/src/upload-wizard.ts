@@ -1,10 +1,13 @@
-import { StorageServiceProvider } from './storage-service-provider'
-import { DBFileProvider } from './db-file-provider'
+import type { StorageServiceProvider } from '@providers/interface'
+import type { DBFileProvider } from '@adapters/interface'
+
+import { FileStatus } from 'shared-types'
+
+import type { DefaultID, Token, MediaFile } from 'shared-types'
+
 import { uuidV4 } from './utils/uuid'
 
-import { DBFileStatus, FileStatus, UploadWizardConfig } from './types'
-
-import type { DefaultID, Token, MediaFile, SignedUploadUrl } from './types'
+import type { UploadWizardConfig, SignedUploadUrl } from './types'
 
 export class UploadWizard<ID = DefaultID> {
     private storageServiceProvider: StorageServiceProvider<ID>
@@ -39,7 +42,7 @@ export class UploadWizard<ID = DefaultID> {
         await this.dbFileProvider.createEntry({
             id,
             confirmToken,
-            status: DBFileStatus.REQUESTED,
+            status: FileStatus.REQUESTED,
         })
 
         return {
@@ -68,7 +71,7 @@ export class UploadWizard<ID = DefaultID> {
             throw new Error('File not found')
         }
 
-        await this.dbFileProvider.updateStatus(imageId, DBFileStatus.UPLOADED)
+        await this.dbFileProvider.updateStatus(imageId, FileStatus.UPLOADED)
     }
 
     async getData(fileId: ID): Promise<MediaFile<ID>> {
@@ -85,7 +88,7 @@ export class UploadWizard<ID = DefaultID> {
 
             return {
                 id: fileId,
-                status: DBFileStatus.REQUESTED,
+                status: FileStatus.REQUESTED,
                 variants: undefined,
             }
         }

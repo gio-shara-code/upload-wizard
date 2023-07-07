@@ -1,6 +1,6 @@
-import type { Expiry, Token } from './common.types'
-import type { StorageServiceProvider } from '../storage-service-provider'
-import type { DBFileProvider } from '../db-file-provider'
+import type { Expiry, Token } from 'shared-types'
+import { StorageServiceProvider } from '@providers/interface'
+import { DBFileProvider } from '@adapters/interface'
 
 export interface SignedUploadUrl<ID> {
     id: ID

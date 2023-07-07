@@ -2,8 +2,11 @@ import type {
     RequestSignedUploadUrlResponse,
     GetDataResponse,
     DeleteResponse,
-    ExpiresIn,
-} from './types'
+} from './types/index.types'
+
+import type { ExpiresIn } from 'shared-types'
+
+export * from './types/index.types'
 
 export abstract class StorageServiceProvider<ID> {
     // TODO: Maybe add metaData to this method

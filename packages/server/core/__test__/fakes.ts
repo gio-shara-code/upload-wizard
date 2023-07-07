@@ -1,6 +1,8 @@
-import { StorageServiceProvider } from '../src/storage-service-provider'
-import { DBFileStatus, FileStatus } from '../src/types'
-import { DBFileProvider } from '../src/db-file-provider'
+import {
+    StorageServiceProvider,
+    StorageServiceFileStatus,
+} from '@providers/interface'
+import { DBFileProvider, DBFileStatusType } from '@adapters/interface'
 
 class StorageAdapter<T extends { id: string }> {
     storage: T[] = []
@@ -53,7 +55,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
     storage: FakeStorageService
 
     constructor(fakeStorage: FakeStorageService) {
-        super();
+        super()
 
         this.storage = fakeStorage
     }
@@ -79,7 +81,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
         if (!fileExists) {
             return Promise.resolve({
                 id: fileId,
-                status: FileStatus.NOT_FOUND,
+                status: StorageServiceFileStatus.NOT_FOUND,
                 variants: undefined,
             })
         }
@@ -89,14 +91,16 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
         if (!uploaded) {
             return Promise.resolve({
                 id: fileId,
-                status: FileStatus.NOT_FOUND,
+                status: StorageServiceFileStatus.NOT_FOUND,
                 variants: undefined,
             })
         }
 
         return Promise.resolve({
             id: fileId,
-            status: url ? FileStatus.PROCESSED : FileStatus.UPLOADED,
+            status: url
+                ? StorageServiceFileStatus.PROCESSED
+                : StorageServiceFileStatus.UPLOADED,
             variants: url,
         })
     }
@@ -110,7 +114,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
 
 type FakeDBFile = {
     id: string
-    status: DBFileStatus
+    status: DBFileStatusType
     confirmToken?: string
 }
 
@@ -120,7 +124,7 @@ export class FakeDBFileProvider<ID> extends DBFileProvider<ID> {
     storage: FakeDB
 
     constructor(fakeStorage: FakeDB) {
-        super();
+        super()
 
         this.storage = fakeStorage
     }
