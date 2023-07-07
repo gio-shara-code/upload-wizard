@@ -1,25 +1,34 @@
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import {
     DeleteObjectCommand,
-    DeleteObjectCommandOutput,
     DeleteObjectsCommand,
-    DeleteObjectsCommandOutput,
     GetObjectCommand,
     HeadObjectCommand,
     PutObjectCommand,
     S3ServiceException,
 } from '@aws-sdk/client-s3'
-import {
-    DeleteRequest,
-    GetDataRequest,
-    SignedUploadUrlRequest,
-    StorageServiceProvider,
-} from '@providers/interface'
-import { ExpiresIn, FileStatus } from 'shared-types'
-import { S3ProviderConfiguration, S3ProviderConfigurationParsed } from './types'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { StorageServiceProvider } from '@providers/interface'
+import { FileStatus } from 'shared-types'
+
 import { S3Clients } from './utils/s3-client'
 import { S3ProviderConfigurationParser } from './utils/s3-provider-configuration-parser'
 import { S3KeyResolvers } from './utils/s3-key-resolver'
+
+import type {
+    DeleteObjectCommandOutput,
+    DeleteObjectsCommandOutput,
+} from '@aws-sdk/client-s3'
+import type {
+    DeleteRequest,
+    GetDataRequest,
+    SignedUploadUrlRequest,
+} from '@providers/interface'
+import type { ExpiresIn } from 'shared-types'
+
+import type {
+    S3ProviderConfiguration,
+    S3ProviderConfigurationParsed,
+} from './types'
 
 export class S3Provider<ID> extends StorageServiceProvider<ID> {
     private readonly clients: S3Clients
