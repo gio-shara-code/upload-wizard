@@ -12,21 +12,20 @@ export type StorageServiceFileStatusType = keyof typeof StorageServiceFileStatus
 type Request<T> = Promise<T>
 
 type SignedUploadUrl<ID> = {
-  id: ID
-  url: string
-  /**
-   * The expiry date in seconds since the Unix epoch.
-   */
-  expiry: Expiry
+    id: ID
+    url: string
+    /**
+     * The expiry date in seconds since the Unix epoch.
+     */
+    expiry: Expiry
 }
 
 type FileData<ID> = MediaFile<ID> & {
     uploadedAt?: Date
 }
 
-
 export type SignedUploadUrlRequest<ID> = Request<SignedUploadUrl<ID>>
 
 export type GetDataRequest<ID> = Request<FileData<ID>>
 
-export type DeleteRequest= Request<void>
+export type DeleteRequest = Request<void>

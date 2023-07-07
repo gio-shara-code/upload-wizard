@@ -103,7 +103,8 @@ export interface S3ProviderConfiguration extends S3DefaultBucketConfiguration {
     optimisticFileDataResponse?: boolean
 }
 
-export interface S3ProviderConfigurationParsed extends Required<S3ProviderConfiguration> {
+export interface S3ProviderConfigurationParsed
+    extends Required<S3ProviderConfiguration> {
     resourceBucket: Required<S3ResourceBucketConfiguration>
 }
 
