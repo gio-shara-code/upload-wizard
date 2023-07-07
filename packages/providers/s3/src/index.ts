@@ -1,2 +1,2 @@
 export * from './provider'
-export { S3ProviderOptions } from './types'
+export { S3ProviderConfiguration } from './types'
