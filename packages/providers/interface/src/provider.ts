@@ -3,7 +3,7 @@ import type {
     GetDataRequest,
     SignedUploadUrlRequest,
 } from './types'
-import type { ExpiresIn } from '@shared/types'
+import type { ExpiresIn } from 'shared-types'
 
 export abstract class StorageServiceProvider<ID> {
     // TODO: Maybe add metaData to this method

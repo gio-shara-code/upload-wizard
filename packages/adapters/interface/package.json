@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@shared/types": "workspace:*"
+    "shared-types": "workspace:*"
   },
   "devDependencies": {
     "eslint-config-typescript": "workspace:*",
