@@ -1,7 +1,7 @@
 import type {
-    RequestSignedUploadUrlResponse,
-    GetDataResponse,
-    DeleteResponse,
+    SignedUploadUrlRequest,
+    GetDataRequest,
+    DeleteRequest,
 } from './types/index.types'
 
 import type { ExpiresIn } from 'shared-types'
@@ -13,9 +13,9 @@ export abstract class StorageServiceProvider<ID> {
     abstract signedUploadUrl(
         fileId: ID,
         expiresIn: ExpiresIn
-    ): Promise<RequestSignedUploadUrlResponse<ID>>
+    ): SignedUploadUrlRequest<ID>
 
-    abstract getData(fileId: ID): Promise<GetDataResponse<ID>>
+    abstract getData(fileId: ID): GetDataRequest<ID>
 
-    abstract delete(fileId: ID): Promise<DeleteResponse>
+    abstract delete(fileId: ID): DeleteRequest
 }
