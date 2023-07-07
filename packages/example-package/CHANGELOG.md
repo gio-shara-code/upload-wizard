@@ -1,5 +1,11 @@
 # @gio-shara/publish-example
 
+## 3.1.4
+
+### Patch Changes
+
+-   3cb0c24: I just want to test the github changeset-bot
+
 ## 3.1.3
 
 ### Patch Changes
@@ -39,4 +45,6 @@
 
 ### Major Changes
 
-~~~~-   Init package~~~~
+```- Init package~~~~
+
+```
