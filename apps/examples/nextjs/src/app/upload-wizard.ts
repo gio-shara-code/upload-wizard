@@ -31,7 +31,7 @@ export const uploadWizard = new UploadWizard({
     dbFileProvider: new DBProvider(),
     storageServiceProvider: new S3Provider({
         bucketPath: 'uploads',
-        acl: 'public-read',
+        acl: 'bucket-owner-full-control',
         optimisticFileDataResponse: true,
     }),
 })
