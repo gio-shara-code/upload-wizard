@@ -8,7 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "image-uploader": "pnpm --filter image-uploader start",
     "prepare": "husky install",
-    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
+    "changeset": "changeset"
   },
   "name": "upload-wizard",
   "repository": "https://github.com/gio-shara-code/upload-wizard",
@@ -29,7 +30,8 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "tsup": "^7.1.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "turbo": "1.2.5"
   },
   "dependencies": {
     "znv": "^0.3.2",
