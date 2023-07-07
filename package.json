@@ -8,7 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "image-uploader": "pnpm --filter image-uploader start",
     "prepare": "husky install",
-    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
+    "changeset": "changeset"
   },
   "name": "upload-wizard",
   "repository": "https://github.com/gio-shara-code/upload-wizard",
