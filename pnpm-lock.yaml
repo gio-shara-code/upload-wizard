@@ -121,6 +121,9 @@ importers:
       '@providers/interface':
         specifier: workspace:*
         version: link:../interface
+      shared-types:
+        specifier: workspace:*
+        version: link:../../types
     devDependencies:
       eslint-config-typescript:
         specifier: workspace:*
