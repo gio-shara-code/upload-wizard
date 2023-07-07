@@ -1,5 +1,5 @@
-import type { Token } from 'shared-types'
-import { FileStatus } from 'shared-types'
+import type { Token } from '@shared/types'
+import { FileStatus } from '@shared/types'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { PROCESSED, NOT_FOUND, ...FileStatusRest } = FileStatus

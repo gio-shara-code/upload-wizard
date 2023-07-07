@@ -19,7 +19,7 @@
   "dependencies": {
     "@providers/interface": "workspace:*",
     "@adapters/interface": "workspace:*",
-    "shared-types": "workspace:*"
+    "@shared/types": "workspace:*"
   },
   "devDependencies": {
     "@providers/s3": "workspace:*",

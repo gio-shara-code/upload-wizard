@@ -8,7 +8,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { StorageServiceProvider } from '@providers/interface'
-import { FileStatus } from 'shared-types'
+import { FileStatus } from '@shared/types'
 
 import { S3Clients } from './utils/s3-client'
 import { S3ProviderConfigurationParser } from './utils/s3-provider-configuration-parser'
@@ -23,7 +23,7 @@ import type {
     GetDataRequest,
     SignedUploadUrlRequest,
 } from '@providers/interface'
-import type { ExpiresIn } from 'shared-types'
+import type { ExpiresIn } from '@shared/types'
 
 import type {
     S3ProviderConfiguration,

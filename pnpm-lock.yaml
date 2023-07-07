@@ -72,7 +72,7 @@ importers:
 
   packages/adapters/interface:
     dependencies:
-      shared-types:
+      '@shared/types':
         specifier: workspace:*
         version: link:../../types
     devDependencies:
@@ -99,7 +99,7 @@ importers:
 
   packages/providers/interface:
     dependencies:
-      shared-types:
+      '@shared/types':
         specifier: workspace:*
         version: link:../../types
     devDependencies:
@@ -121,7 +121,7 @@ importers:
       '@providers/interface':
         specifier: workspace:*
         version: link:../interface
-      shared-types:
+      '@shared/types':
         specifier: workspace:*
         version: link:../../types
     devDependencies:
@@ -140,7 +140,7 @@ importers:
       '@providers/interface':
         specifier: workspace:*
         version: link:../../providers/interface
-      shared-types:
+      '@shared/types':
         specifier: workspace:*
         version: link:../../types
     devDependencies:
