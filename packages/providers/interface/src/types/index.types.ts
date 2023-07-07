@@ -1,10 +1,10 @@
 import type { Expiry, MediaFile } from 'shared-types';
 import { FileStatus } from "shared-types";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { REQUESTED, ...FileStatusRest } = FileStatus
 export const StorageServiceFileStatus = {
-  [FileStatus.UPLOADED]: FileStatus.UPLOADED,
-  [FileStatus.PROCESSED]: FileStatus.PROCESSED,
-  [FileStatus.NOT_FOUND]: FileStatus.NOT_FOUND,
+  ...FileStatusRest
 } as const
 
 export type StorageServiceFileStatusType = keyof typeof StorageServiceFileStatus
