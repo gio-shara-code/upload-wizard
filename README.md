@@ -12,67 +12,67 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
     participant SP as Storage Provider (Cloudflare)
-    
+
     autonumber
-    
+
     FE->>BE: Request Upload URL
-    
+
     activate FE
     activate BE
-    
+
     BE->>DB: Create File Entry (status = requested)
 %%    DB-->>BE: ‎
 
     BE->>SP: Request Signed Upload URL
 %%    SP-->>BE: ‎
-    
+
     BE-->>FE: Return Signed Upload URL + confirmToken
-    
+
     deactivate BE
-    
+
     FE->>SP: Upload File (using signed URL)
 %%    SP-->>FE: ‎
-    
+
     FE->>BE: Confirm Upload (confirmToken)
-    
+
     activate BE
-    
+
     BE->>DB: Get confirmToken
 %%    DB-->>BE: ‎
-    
+
     BE->>BE: Verify confirmToken
-    
+
     BE->>SP: Request file
 %%    SP-->>BE: ‎
-    
+
     BE->>BE: Verify that file has been uploaded
-    
+
     BE->>DB: Update File Entry (status = uploaded)
 %%    DB-->>BE: ‎
-    
+
 %%    BE-->>FE: ‎
-    
+
     deactivate BE
 
     loop Poll until file is ready
-        
+
         FE->>BE: Request File
-        
+
         activate BE
-        
+
         BE->>DB: Get File Entry
 %%        DB-->>BE: ‎
-        
+
         BE->>BE: Verify that file exists
-        
+
         BE->>SP: Request file
 %%        SP-->>BE: ‎
-        
+
         BE->>FE: Return file
-        
+
         deactivate BE
-    
+
     end
-    
+
     deactivate FE
 ```

@@ -3,11 +3,7 @@ import type { DBFileProvider } from '@adapters/interface'
 
 import { FileStatus } from 'shared-types'
 
-import type {
-    DefaultID,
-    Token,
-    MediaFile,
-} from 'shared-types'
+import type { DefaultID, Token, MediaFile } from 'shared-types'
 
 import { uuidV4 } from './utils/uuid'
 

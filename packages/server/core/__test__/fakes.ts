@@ -1,5 +1,8 @@
-import { StorageServiceProvider, StorageServiceFileStatus } from "@providers/interface";
-import { DBFileProvider, DBFileStatusType } from "@adapters/interface";
+import {
+    StorageServiceProvider,
+    StorageServiceFileStatus,
+} from '@providers/interface'
+import { DBFileProvider, DBFileStatusType } from '@adapters/interface'
 
 class StorageAdapter<T extends { id: string }> {
     storage: T[] = []
@@ -95,7 +98,9 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
 
         return Promise.resolve({
             id: fileId,
-            status: url ? StorageServiceFileStatus.PROCESSED : StorageServiceFileStatus.UPLOADED,
+            status: url
+                ? StorageServiceFileStatus.PROCESSED
+                : StorageServiceFileStatus.UPLOADED,
             variants: url,
         })
     }
