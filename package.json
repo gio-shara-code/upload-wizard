@@ -6,6 +6,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "image-uploader": "pnpm --filter image-uploader start",
     "publish-packages": "turbo run build lint test && changeset version && changeset publish",
     "changeset": "changeset"
