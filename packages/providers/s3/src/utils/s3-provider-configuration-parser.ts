@@ -40,7 +40,7 @@ export class S3ProviderConfigurationParser {
                 resourceBucket: z.object({
                     bucketName: z.string(),
                     bucketRegion: z.string(),
-                    bucketPath: z.array(z.string()),
+                    bucketPath: z.array(z.string()).nonempty(),
                 }),
                 acl: z.nativeEnum(ObjectCannedACL),
                 optimisticFileDataResponse: z.boolean(),

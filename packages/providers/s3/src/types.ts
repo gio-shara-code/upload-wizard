@@ -37,7 +37,7 @@ export interface S3DefaultBucketConfiguration extends S3BucketConfiguration {
     bucketPath: string
 }
 
-export type S3ResourceBucketPath = readonly string[]
+export type S3ResourceBucketPath = readonly [string, ...string[]]
 
 export interface S3ResourceBucketConfiguration extends S3BucketConfiguration {
     /**
