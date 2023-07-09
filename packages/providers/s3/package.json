@@ -9,6 +9,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "test": "jest",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint \"src/**/*.ts\""
   },
@@ -17,7 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "eslint-config-typescript": "workspace:*",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "test-config": "workspace:*"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.363.0",
