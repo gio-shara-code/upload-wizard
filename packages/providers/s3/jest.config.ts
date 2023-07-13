@@ -1,1 +1,3 @@
-export default require('test-config')
+import config from 'test-config'
+
+export default config
