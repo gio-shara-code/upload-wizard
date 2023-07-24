@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "turbo run build --filter=@adapters/* --filter=@providers/* --filter=@server/* --filter=shared-types",
+    "dev": "turbo run dev --filter=nextjs-example",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
