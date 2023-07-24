@@ -15,6 +15,10 @@ export class S3Clients {
         this._uploadClient = new S3Client({
             region: configuration.uploadClientRegion,
             credentials,
+            endpoint:
+                process.env.NODE_ENV === 'test'
+                    ? 'http://s3.localhost.localstack.cloud:4566'
+                    : undefined,
         })
 
         if (
@@ -24,6 +28,10 @@ export class S3Clients {
             this._resourceClient = new S3Client({
                 region: configuration.resourceClientRegion,
                 credentials,
+                endpoint:
+                    process.env.NODE_ENV === 'test'
+                        ? 'http://s3.localhost.localstack.cloud:4566'
+                        : undefined,
             })
         } else {
             this._resourceClient = this._uploadClient
