@@ -132,3 +132,8 @@ out
 .idea
 .vscode
 **/.turbo/**
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
