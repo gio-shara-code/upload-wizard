@@ -1,9 +1,11 @@
 'use client'
 
-import { ReactNode, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MediaFile, FileStatus } from 'shared-types'
 import { SignedUploadUrl } from '@server/core'
 import { z } from 'zod'
+import PrimaryButton from "@components/atoms/buttons/Primary";
+import StepSection from "./StepSection";
 
 enum Step {
     CHOOSE_FILE,
@@ -117,6 +119,8 @@ class UploadHandler {
     }
 }
 
+
+
 export default function Home() {
     const [data, setData] = useState<{ message: string } | null>()
     const controller = useMemo(() => new AbortController(), [])
@@ -175,7 +179,7 @@ export default function Home() {
                     Upload
                 </h2>
 
-                <Section
+                <StepSection
                     number={1}
                     active={step === Step.CHOOSE_FILE}
                     done={done}
@@ -195,97 +199,36 @@ export default function Home() {
                             />
                         </div>
                     )}
-                </Section>
+                </StepSection>
 
-                <Section number={2} active={step === Step.REQUEST_UPLOAD_URL}>
+                <StepSection number={2} active={step === Step.REQUEST_UPLOAD_URL}>
                     {(disabled) => (
-                        <Button disabled={disabled}>Request Upload URL</Button>
+                        <PrimaryButton disabled={disabled}>Request Upload URL</PrimaryButton>
                     )}
-                </Section>
+                </StepSection>
 
-                <Section number={3} active={step === Step.UPLOAD_FILE}>
+                <StepSection number={3} active={step === Step.UPLOAD_FILE}>
                     {(disabled) => (
-                        <Button disabled={disabled}>Upload File</Button>
+                        <PrimaryButton disabled={disabled}>Upload File</PrimaryButton>
                     )}
-                </Section>
+                </StepSection>
 
-                <Section number={4} active={step === Step.CONFIRM_UPLOAD}>
+                <StepSection number={4} active={step === Step.CONFIRM_UPLOAD}>
                     {(disabled) => (
-                        <Button disabled={disabled}>Confirm Upload</Button>
+                        <PrimaryButton disabled={disabled}>Confirm Upload</PrimaryButton>
                     )}
-                </Section>
+                </StepSection>
 
-                <Section number={5} active={step === Step.POLL_FILE}>
+                <StepSection number={5} active={step === Step.POLL_FILE}>
                     {(disabled) => (
-                        <Button disabled={disabled}>Poll File</Button>
+                        <PrimaryButton disabled={disabled}>Poll File</PrimaryButton>
                     )}
-                </Section>
+                </StepSection>
             </section>
         </main>
     )
 }
 
-interface SectionProps {
-    number: number
-    active: boolean
-    done?: boolean
-    children: (disabled: boolean) => ReactNode
-}
 
-const Section = ({ children, number, active, done }: SectionProps) => {
-    const disabled = useMemo(() => {
-        return !active
-    }, [active])
 
-    return (
-        <section className={'flex items-start gap-4'}>
-            <div
-                aria-disabled={done ? false : disabled}
-                className={
-                    'aria-disabled:opacity-50 aria-disabled:pointer-events-none'
-                }
-            >
-                <NumberComponent number={number} done={done} />
-            </div>
-            <div
-                aria-disabled={disabled}
-                className={`transition-[max-height] duration-500 overflow-y-auto aria-disabled:opacity-50 aria-disabled:pointer-events-none`}
-            >
-                {children(disabled)}
-            </div>
-        </section>
-    )
-}
 
-interface NumberComponentProps {
-    number: number
-    done?: boolean
-}
-
-const NumberComponent = ({ number, done }: NumberComponentProps) => {
-    return (
-        <div
-            className={`text-lg font-bold text-cyan-900 w-6 h-6 flex justify-center items-center rounded-full ${
-                done ? 'bg-green-500' : 'bg-white'
-            }`}
-        >
-            {done ? '✓' : number}
-        </div>
-    )
-}
-
-interface ButtonProps {
-    disabled?: boolean
-    children: ReactNode
-}
-
-const Button = ({ children, disabled }: ButtonProps) => {
-    return (
-        <button
-            className={`bg-orange-300 hover:bg-orange-100 text-gray-800 py-1 px-2 rounded-full disabled:bg-gray-300 disabled:text-gray-500`}
-            disabled={disabled}
-        >
-            {children}
-        </button>
-    )
-}
