@@ -9,7 +9,9 @@ export const StorageServiceFileStatus = {
 
 export type StorageServiceFileStatusType = keyof typeof StorageServiceFileStatus
 
-export type RequestSignedUploadUrlResponse<ID> = {
+type Request<T> = Promise<T>
+
+type SignedUploadUrl<ID> = {
     id: ID
     url: string
     /**
@@ -18,8 +20,12 @@ export type RequestSignedUploadUrlResponse<ID> = {
     expiry: Expiry
 }
 
-export type GetDataResponse<ID> = MediaFile<ID> & {
+type FileData<ID> = MediaFile<ID> & {
     uploadedAt?: Date
 }
 
-export type DeleteResponse = void
+export type SignedUploadUrlRequest<ID> = Request<SignedUploadUrl<ID>>
+
+export type GetDataRequest<ID> = Request<FileData<ID>>
+
+export type DeleteRequest = Request<void>

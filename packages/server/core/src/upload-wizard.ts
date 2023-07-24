@@ -35,7 +35,7 @@ export class UploadWizard<ID = DefaultID> {
         const id = this.idGenerator()
 
         const { url, expiry } =
-            await this.storageServiceProvider.requestSignedUploadUrl(id, 3600)
+            await this.storageServiceProvider.signedUploadUrl(id, 3600)
 
         const confirmToken = this.tokenGenerator()
 

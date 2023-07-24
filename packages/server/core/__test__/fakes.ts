@@ -60,7 +60,7 @@ export class FakeStorageServiceProvider<ID> extends StorageServiceProvider<ID> {
         this.storage = fakeStorage
     }
 
-    requestSignedUploadUrl(fileId, expiresIn) {
+    signedUploadUrl(fileId, expiresIn) {
         this.storage.add({
             id: fileId,
             uploaded: false,
