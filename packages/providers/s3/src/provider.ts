@@ -72,8 +72,6 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
             expiresIn: expiresIn,
         })
 
-        console.debug('Signed upload URL created for file', url)
-
         return {
             id: fileId,
             url,
