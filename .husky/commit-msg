@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx --no -- commitlint --edit ${1}
+if [ "$GITHUB_ACTIONS" = "true" ];
+then
+  echo "skipping commitlint on CI"
+else
+  npx --no -- commitlint --edit ${1}
+fi
