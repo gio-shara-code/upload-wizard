@@ -51,7 +51,7 @@ export const teardownS3Mock = async () => {
 
 export const resetS3Mock = async () => {
     try {
-        await childProcessWrapper('make', ['s3-reset'], {
+        await childProcessWrapper('make', ['reset-soft'], {
             timeout: 1000,
         })
     } catch (e) {
