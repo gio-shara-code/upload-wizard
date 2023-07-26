@@ -13,7 +13,7 @@ localstack-status:
 	@docker compose ps -a
 
 localstack-teardown:
-	@echo "Stopping localstack..."
+	@echo "Tearing down localstack..."
 	@docker compose down -v
 
 localstack-pause:
