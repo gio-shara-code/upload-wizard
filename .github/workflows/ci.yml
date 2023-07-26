@@ -30,16 +30,16 @@ jobs:
         uses: actions/cache@v3
         id: cache-docker-localstack
         with:
-          path: var/lib/docker
+          path: ci/cache/docker/localstack
           key: localstack-docker-image-${{ runner.os }}
 
-#      - name: Store LocalStack Docker Image Cache
-#        if: steps.cache-docker-localstack.outputs.cache-hit != 'true'
-#        run: docker pull localstack/localstack && mkdir -p ci/cache/docker/localstack && docker image save localstack/localstack --output ./ci/cache/docker/localstack/localstack.tar
-#
-#      - name: Load LocalStack Docker Image Cache
-#        if: steps.cache-docker-localstack.outputs.cache-hit == 'true'
-#        run: docker image load --input ./ci/cache/docker/localstack/localstack.tar
+      - name: Store LocalStack Docker Image Cache
+        if: steps.cache-docker-localstack.outputs.cache-hit != 'true'
+        run: docker pull localstack/localstack && mkdir -p ci/cache/docker/localstack && docker image save localstack/localstack --output ./ci/cache/docker/localstack/localstack.tar
+
+      - name: Load LocalStack Docker Image Cache
+        if: steps.cache-docker-localstack.outputs.cache-hit == 'true'
+        run: docker image load --input ./ci/cache/docker/localstack/localstack.tar
 
       - name: Test
         run: pnpm test
