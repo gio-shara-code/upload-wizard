@@ -83,13 +83,16 @@ describe('S3Provider', () => {
             ...options,
         })
 
-        const date = new Date()
+        const { url, id, expiry } = await provider.signedUploadUrl(
+            fileId,
+            expiresIn
+        )
+
+        const date = new Date(expiry)
         const parsedDate = date
             .toISOString()
             .replace(/[:-]/g, '')
             .replace(/\.\d{3}/, '')
-
-        const { url, id } = await provider.signedUploadUrl(fileId, expiresIn)
 
         const parsedUrl = new URL(url)
         const searchParams = parsedUrl.searchParams

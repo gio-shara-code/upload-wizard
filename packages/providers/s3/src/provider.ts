@@ -72,10 +72,26 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
             expiresIn: expiresIn,
         })
 
+        const parsedUrl = new URL(url)
+        const date = parsedUrl.searchParams.get('X-Amz-Date')
+
+        if (!date) {
+            throw new Error('Could not parse expiry date from url')
+        }
+
+        // Converts 20210914T123456Z to 2021-09-14T12:34:56Z
+        // TODO: check if this could be done in a better way
+        const expiry = Date.parse(
+            date.replace(
+                /(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/,
+                '$1-$2-$3T$4:$5:$6'
+            )
+        )
+
         return {
             id: fileId,
             url,
-            expiry: new Date().getTime() + expiresIn * 1000,
+            expiry,
         }
     }
 
