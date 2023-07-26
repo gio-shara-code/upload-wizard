@@ -1,6 +1,8 @@
-setup: localstack-up s3-create
+AWS_PROFILE=localstack_test_profile
 
-reset: localstack-teardown setup
+setup: aws-profile-setup localstack-up s3-create
+
+reset: teardown setup
 reset-soft: s3-reset
 
 teardown: localstack-teardown
@@ -28,17 +30,23 @@ localstack-up:
  		docker compose unpause || \
  		docker compose up -d
 
+aws-profile-setup:
+	@echo "Setting AWS profile..."
+	@aws configure --profile $AWS_PROFILE set aws_access_key_id test
+	@aws configure --profile $AWS_PROFILE set aws_secret_access_key test
+	@aws configure --profile $AWS_PROFILE set region eu-central-1
+
 s3-delete:
 	@echo "Deleting S3 Bucket..."
 	@aws --endpoint-url=http://localhost:4566 \
- 		--profile=localstack \
+ 		--profile=$AWS_PROFILE \
  		s3api delete-bucket \
  		--bucket test-bucket
 
 s3-exists:
 	@echo "Checking if S3 Bucket exists..."
 	@aws --endpoint-url=http://localhost:4566 \
-		--profile=localstack \
+		--profile=$AWS_PROFILE \
 		s3api head-bucket \
 		--bucket test-bucket
 
@@ -47,7 +55,7 @@ s3-create:
 	@make s3-exists > /dev/null && echo "Bucket Already exists" && make s3-delete || echo "Bucket does not exist"
 
 	@aws --endpoint-url=http://localhost:4566 \
-				--profile=localstack \
+				--profile=$AWS_PROFILE \
 				s3api create-bucket \
 				--bucket test-bucket \
 				--object-ownership BucketOwnerEnforced \
@@ -59,5 +67,5 @@ s3-create:
 s3-reset:
 	@echo "Resetting S3..."
 	@aws --endpoint-url=http://localhost:4566 \
-		--profile=localstack \
+		--profile=$AWS_PROFILE \
 		s3 rm s3://test-bucket/upload --recursive
