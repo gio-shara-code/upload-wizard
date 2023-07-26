@@ -8,24 +8,25 @@ teardown-soft: s3-delete localstack-stop
 
 localstack-status:
 	@echo "Checking localstack status..."
-	docker compose ps -a
+	@docker compose ps -a
 
 localstack-teardown:
 	@echo "Stopping localstack..."
-	docker compose down -v
+	@docker compose down -v
+
+localstack-pause:
+	@echo "Pausing localstack..."
+	@docker compose pause
 
 localstack-stop:
 	@echo "Stopping localstack..."
-	docker compose stop
-
-localstack-reset:
-	@echo "Resetting localstack..."
-	@make localstack-teardown
-	@make localstack-up
+	@docker compose stop
 
 localstack-up:
 	@echo "Starting localstack..."
-	docker compose up -d
+	@docker inspect -f '{{.State.Status}}' s3-mock-localstack | grep 'paused' > /dev/null && \
+ 		docker compose unpause || \
+ 		docker compose up -d
 
 s3-delete:
 	@echo "Deleting S3 Bucket..."
