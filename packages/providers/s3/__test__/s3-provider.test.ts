@@ -31,8 +31,14 @@ const expectS3Url = (
 
     expect(searchParams.get('X-Amz-Algorithm')).toBe('AWS4-HMAC-SHA256')
     expect(searchParams.get('X-Amz-Content-Sha256')).toBe('UNSIGNED-PAYLOAD')
+
+    const credentialDateString = new Date()
+        .toISOString()
+        .replace(/T.*/g, '')
+        .replace(/[:-]/g, '')
+
     expect(searchParams.get('X-Amz-Credential')).toBe(
-        'test/20230724/eu-central-1/s3/aws4_request'
+        `test/${credentialDateString}/eu-central-1/s3/aws4_request`
     )
     expect(searchParams.get('X-Amz-SignedHeaders')).toBe('host')
 }
