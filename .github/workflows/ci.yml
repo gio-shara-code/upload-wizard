@@ -28,16 +28,17 @@ jobs:
 
       - name: LocalStack Docker Image Cache
         uses: actions/cache@v3
+        id: cache-docker-localstack
         with:
           path: ci/cache/docker/localstack
-          key: localstack-docker-image-${{ runner.os }}-${{ hashFiles('docker-compose.yml') }}
+          key: localstack-docker-image-${{ runner.os }}
 
       - name: Store LocalStack Docker Image Cache
-        if: steps.cache-docker-mysql.outputs.cache-hit != 'true'
+        if: steps.cache-docker-localstack.outputs.cache-hit != 'true'
         run: docker pull localstack/localstack && mkdir -p ci/cache/docker/localstack && docker image save localstack/localstack --output ./ci/cache/docker/localstack/localstack.tar
 
       - name: Load LocalStack Docker Image Cache
-        if: steps.cache-docker-mysql.outputs.cache-hit == 'true'
+        if: steps.cache-docker-localstack.outputs.cache-hit == 'true'
         run: docker image load --input ./ci/cache/docker/localstack/localstack.tar
 
       - name: Test
