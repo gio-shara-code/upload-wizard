@@ -41,9 +41,15 @@ export const setupS3Mock = async () => {
 
 export const teardownS3Mock = async () => {
     try {
-        await childProcessWrapper('make', ['teardown'], {
-            timeout: 60 * 1000,
-        })
+        if (process.env.CI) {
+            await childProcessWrapper('make', ['teardown'], {
+                timeout: 60 * 1000,
+            })
+        } else {
+            await childProcessWrapper('make', ['teardown-soft'], {
+                timeout: 60 * 1000,
+            })
+        }
     } catch (e) {
         throw new Error(`S3 mock teardown failed, reason: ${e}`)
     }
