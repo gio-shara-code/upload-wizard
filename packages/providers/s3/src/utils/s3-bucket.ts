@@ -44,7 +44,7 @@ class S3Bucket<
 
     async keyExists(
         key: string,
-        commandInput: Omit<HeadObjectCommandInput, 'Bucket' | 'Key'>
+        commandInput?: Omit<HeadObjectCommandInput, 'Bucket' | 'Key'>
     ): Promise<boolean> {
         try {
             const command = new HeadObjectCommand({
@@ -75,7 +75,7 @@ export class S3UploadBucket<ID> extends S3Bucket<
     async getSignedUploadUrl(
         fileId: ID,
         expiresIn: ExpiresIn,
-        commandInput: Omit<PutObjectCommandInput, 'Bucket' | 'Key'>
+        commandInput?: Omit<PutObjectCommandInput, 'Bucket' | 'Key'>
     ) {
         const command = new PutObjectCommand({
             Bucket: this.name,
@@ -94,10 +94,12 @@ export class S3ResourceBucket<ID> extends S3Bucket<
     ID
 > {
     async getSignedDownloadUrl(
-        commandInput: Omit<GetObjectCommandInput, 'Bucket'>
+        key: string,
+        commandInput?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
     ) {
         const command = new GetObjectCommand({
             Bucket: this.name,
+            Key: key,
             ...commandInput,
         })
 
@@ -111,7 +113,7 @@ export class S3ResourceBucket<ID> extends S3Bucket<
     ) {
         return Promise.all(
             keys.map((key) =>
-                this.getSignedDownloadUrl({ Key: key, ...commandInput })
+                this.getSignedDownloadUrl(key, { ...commandInput })
             )
         )
     }
