@@ -117,7 +117,7 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         return []
     }
 
-    async getData(fileId: ID, optimistic: boolean): GetDataRequest<ID> {
+    async getData(fileId: ID, optimistic = false): GetDataRequest<ID> {
         // TODO: Refactor the file check
 
         const variants = await this.createFileUrls(fileId, optimistic)
