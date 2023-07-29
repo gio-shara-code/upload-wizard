@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: s3-mock-localstack
+    image: localstack/localstack:2.2
+    ports:
+      - '4566:4566' # LocalStack endpoint
+      - '4510-4559:4510-4559' # external services port range
+    environment:
+      - PERSISTENCE=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
