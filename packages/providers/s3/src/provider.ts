@@ -123,6 +123,29 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         const variants = await this.createFileUrls(fileId, optimistic)
 
         if (variants.length === 0) {
+            // If the resource bucket is different from the upload bucket
+            // we need to check if the file exists in the upload bucket too.
+            // This is because the file might not have been processed yet.
+            if (
+                S3ProviderConfigurationParser.isResourceBucketDifferent(
+                    this.configuration,
+                    this.configuration.resourceBucket
+                )
+            ) {
+                const exists = await this.buckets.upload.keyExists(
+                    this.buckets.upload.keyResolver.resolve(fileId),
+                    {}
+                )
+
+                if (exists) {
+                    return {
+                        id: fileId,
+                        variants: [],
+                        status: FileStatus.UPLOADED,
+                    }
+                }
+            }
+
             return {
                 id: fileId,
                 variants: [],
