@@ -14,7 +14,6 @@ import { S3KeyResolver } from './s3-key-resolver'
 import {
     S3DefaultBucketConfiguration,
     S3ResourceBucketConfiguration,
-    S3ResourceBucketPath,
 } from '../types'
 import { ExpiresIn } from 'shared-types'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
