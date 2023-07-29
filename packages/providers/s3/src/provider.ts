@@ -122,36 +122,18 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
 
         const variants = await this.createFileUrls(fileId, optimistic)
 
-        if (variants.length === 0) {
-            // If the resource bucket is different from the upload bucket
-            // we need to check if the file exists in the upload bucket too.
-            // This is because the file might not have been processed yet.
-            if (!this.buckets.upload.equals(this.buckets.resource)) {
-                const exists = await this.buckets.upload.keyExists(
-                    this.buckets.upload.keyResolver.resolve(fileId),
-                    {}
-                )
-
-                if (exists) {
-                    return {
-                        id: fileId,
-                        variants: [],
-                        status: FileStatus.UPLOADED,
-                    }
-                }
-            }
-
+        if (
+            variants.length ===
+            this.configuration.resourceBucket.bucketPath.length
+        ) {
             return {
                 id: fileId,
-                variants: [],
-                status: FileStatus.NOT_FOUND,
+                variants,
+                status: FileStatus.PROCESSED,
             }
         }
 
-        if (
-            variants.length !==
-            this.configuration.resourceBucket.bucketPath.length
-        ) {
+        if (variants.length > 0) {
             return {
                 id: fileId,
                 variants,
@@ -159,10 +141,25 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
             }
         }
 
+        if (!optimistic && !this.buckets.upload.equals(this.buckets.resource)) {
+            const existsInUploadBucket = await this.buckets.upload.keyExists(
+                this.buckets.upload.keyResolver.resolve(fileId),
+                {}
+            )
+
+            if (existsInUploadBucket) {
+                return {
+                    id: fileId,
+                    variants: [],
+                    status: FileStatus.UPLOADED,
+                }
+            }
+        }
+
         return {
             id: fileId,
-            variants,
-            status: FileStatus.PROCESSED,
+            variants: [],
+            status: FileStatus.NOT_FOUND,
         }
     }
 
