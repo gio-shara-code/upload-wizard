@@ -26,14 +26,16 @@ import type {
 import type { ExpiresIn } from 'shared-types'
 
 import type {
+    Buckets,
     S3ProviderConfiguration,
     S3ProviderConfigurationParsed,
+    S3ResourceBucketPath,
 } from './types'
+import { S3ResourceBucket, S3UploadBucket } from './utils/s3-bucket'
 
 export class S3Provider<ID> extends StorageServiceProvider<ID> {
-    private readonly clients: S3Clients
     private readonly configuration: S3ProviderConfigurationParsed
-    private readonly keyResolver: S3KeyResolvers<ID>
+    private readonly buckets: Buckets<ID>
 
     constructor(configuration: S3ProviderConfiguration) {
         super()
@@ -42,16 +44,31 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
 
         this.configuration = configurationParser.parse(configuration)
 
-        this.clients = new S3Clients({
+        const clients = new S3Clients({
             uploadClientRegion: this.configuration.bucketRegion,
             resourceClientRegion:
                 this.configuration.resourceBucket.bucketRegion,
         })
 
-        this.keyResolver = new S3KeyResolvers({
+        const keyResolver = new S3KeyResolvers({
             uploadBucketPath: this.configuration.bucketPath,
             resourceBucketPath: this.configuration.resourceBucket.bucketPath,
         })
+
+        this.buckets = {
+            upload: new S3UploadBucket<ID>(clients.upload, keyResolver.upload, {
+                bucketName: this.configuration.bucketName,
+                bucketRegion: this.configuration.bucketRegion,
+                bucketPath: this.configuration.bucketPath,
+            }),
+            resource: new S3ResourceBucket<ID>(
+                clients.resource,
+                keyResolver.resource,
+                {
+                    ...this.configuration.resourceBucket,
+                }
+            ),
+        }
     }
 
     async signedUploadUrl(
@@ -61,16 +78,14 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         // NOTE: It might be interesting to use https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-s3-presigned-post/
         //       to generate a presigned POST request. This however requires a lot of additional work since the FE needs to have
         //       additional data to send the request. Not just the URL.
-        const command = new PutObjectCommand({
-            Bucket: this.configuration.bucketName,
-            Key: this.keyResolver.upload.resolve(fileId),
-            ACL: this.configuration.acl,
-            ContentType: 'text/plain',
-        })
-
-        const url = await getSignedUrl(this.clients.uploadClient, command, {
-            expiresIn: expiresIn,
-        })
+        const url = await this.buckets.upload.getSignedUploadUrl(
+            fileId,
+            expiresIn,
+            {
+                ACL: this.configuration.acl,
+                ContentType: 'text/plain',
+            }
+        )
 
         const parsedUrl = new URL(url)
         const date = parsedUrl.searchParams.get('X-Amz-Date')
@@ -95,72 +110,23 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         }
     }
 
-    private async createFileUrl(key: string): Promise<string> {
-        if (this.configuration.acl === 'public-read') {
-            return Promise.resolve(
-                `https://${this.configuration.bucketName}.s3.${this.configuration.bucketRegion}.amazonaws.com/${key}`
-            )
-        }
-
-        const command = new GetObjectCommand({
-            Bucket: this.configuration.bucketName,
-            Key: key,
-        })
-
-        return await getSignedUrl(this.clients.resourceClient, command)
-    }
-
     private async createFileUrls(fileId: ID): Promise<string[]> {
-        const keys = this.keyResolver.resource.resolve(fileId)
-
         if (!this.configuration.optimisticFileDataResponse) {
-            const keysExists = await Promise.all(
-                keys.map(async (key) => {
-                    const exists = await this.keyExists(key)
-                    return {
-                        key,
-                        exists,
-                    }
-                })
+            const existingKeys = await this.buckets.resource.existingKeys(
+                fileId
             )
-
-            const existingKeys = keysExists
-                .filter((key) => key.exists)
-                .map((key) => key.key)
 
             if (existingKeys.length === 0) {
                 return []
             } else {
-                return Promise.all(
-                    existingKeys.map((key) => this.createFileUrl(key))
+                return this.buckets.resource.getSignedDownloadUrls(
+                    fileId,
+                    existingKeys as unknown as S3ResourceBucketPath
                 )
             }
         }
 
-        return Promise.all(keys.map((key) => this.createFileUrl(key)))
-    }
-
-    private async keyExists(key: string): Promise<boolean> {
-        try {
-            const command = new HeadObjectCommand({
-                Bucket: this.configuration.resourceBucket.bucketName,
-                Key: key,
-            })
-
-            const { DeleteMarker } = await this.clients.resourceClient.send(
-                command
-            )
-
-            return DeleteMarker !== true
-        } catch (error) {
-            if (error instanceof S3ServiceException) {
-                if (error.name === 'NotFound') {
-                    return false
-                }
-            }
-
-            throw error
-        }
+        return this.buckets.resource.getSignedDownloadUrls(fileId)
     }
 
     async getData(fileId: ID): GetDataRequest<ID> {
@@ -194,38 +160,10 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         }
     }
 
-    private async deleteAllByKeys(
-        keys: readonly string[]
-    ): Promise<DeleteObjectsCommandOutput> {
-        const command = new DeleteObjectsCommand({
-            Bucket: this.configuration.bucketName,
-            Delete: {
-                Objects: keys.map((key) => ({ Key: key })),
-            },
-        })
-
-        return await this.clients.resourceClient.send(command)
-    }
-
-    private async deleteByKey(key: string): Promise<DeleteObjectCommandOutput> {
-        const command = new DeleteObjectCommand({
-            Bucket: this.configuration.bucketName,
-            Key: key,
-        })
-
-        return await this.clients.resourceClient.send(command)
-    }
-
     async delete(fileId: ID): DeleteRequest {
-        const keys = this.keyResolver.resource.resolve(fileId)
-
         // TODO: Handle errors
         // TODO: Handle delete of non existing files
 
-        if (keys.length > 1) {
-            await this.deleteAllByKeys(keys)
-        } else {
-            await this.deleteByKey(keys[0])
-        }
+        await this.buckets.resource.deleteObjects(fileId)
     }
 }
