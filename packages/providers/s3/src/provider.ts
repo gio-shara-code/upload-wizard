@@ -126,12 +126,7 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
             // If the resource bucket is different from the upload bucket
             // we need to check if the file exists in the upload bucket too.
             // This is because the file might not have been processed yet.
-            if (
-                S3ProviderConfigurationParser.isResourceBucketDifferent(
-                    this.configuration,
-                    this.configuration.resourceBucket
-                )
-            ) {
+            if (!this.buckets.upload.equals(this.buckets.resource)) {
                 const exists = await this.buckets.upload.keyExists(
                     this.buckets.upload.keyResolver.resolve(fileId),
                     {}

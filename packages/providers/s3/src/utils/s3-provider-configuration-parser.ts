@@ -87,15 +87,4 @@ export class S3ProviderConfigurationParser {
             acl: configuration.acl ?? ObjectCannedACL.bucket_owner_full_control,
         }
     }
-
-    static isResourceBucketDifferent(
-        a: S3DefaultBucketConfiguration,
-        b: S3ResourceBucketConfiguration
-    ) {
-        return !(
-            a.bucketName === b.bucketName &&
-            a.bucketRegion === b.bucketRegion &&
-            a.bucketPath === b.bucketPath?.[0]
-        )
-    }
 }

@@ -18,7 +18,7 @@ import {
 import { ExpiresIn } from 'shared-types'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-class S3Bucket<
+abstract class S3Bucket<
     Config extends
         | Required<S3DefaultBucketConfiguration>
         | Required<S3ResourceBucketConfiguration>,
@@ -41,6 +41,12 @@ class S3Bucket<
         this.name = s3Config.bucketName
         this.path = s3Config.bucketPath
     }
+
+    abstract equals(
+        bucket: this extends S3UploadBucket<ID>
+            ? S3ResourceBucket<ID>
+            : S3UploadBucket<ID>
+    ): boolean
 
     async keyExists(
         key: string,
@@ -72,6 +78,14 @@ export class S3UploadBucket<ID> extends S3Bucket<
     Required<S3DefaultBucketConfiguration>,
     ID
 > {
+    equals(bucket: S3ResourceBucket<ID>): boolean {
+        return (
+            this.name === bucket.name &&
+            this.region === bucket.region &&
+            this.path === bucket.path[0]
+        )
+    }
+
     async getSignedUploadUrl(
         fileId: ID,
         expiresIn: ExpiresIn,
@@ -93,6 +107,14 @@ export class S3ResourceBucket<ID> extends S3Bucket<
     Required<S3ResourceBucketConfiguration>,
     ID
 > {
+    equals(bucket: S3UploadBucket<ID>): boolean {
+        return (
+            this.name === bucket.name &&
+            this.region === bucket.region &&
+            this.path[0] === bucket.path
+        )
+    }
+
     async getSignedDownloadUrl(
         key: string,
         commandInput?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
