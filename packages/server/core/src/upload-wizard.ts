@@ -65,7 +65,10 @@ export class UploadWizard<ID = DefaultID> {
             throw new Error('Invalid confirm token')
         }
 
-        const { status } = await this.storageServiceProvider.getData(imageId)
+        const { status } = await this.storageServiceProvider.getData(
+            imageId,
+            false
+        )
 
         if (status === FileStatus.NOT_FOUND) {
             throw new Error('File not found')
@@ -76,7 +79,8 @@ export class UploadWizard<ID = DefaultID> {
 
     async getData(fileId: ID): Promise<MediaFile<ID>> {
         const { status, variants } = await this.storageServiceProvider.getData(
-            fileId
+            fileId,
+            true
         )
 
         if (status === FileStatus.NOT_FOUND) {

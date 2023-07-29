@@ -12,7 +12,7 @@ export abstract class StorageServiceProvider<ID> {
         expiresIn: ExpiresIn
     ): SignedUploadUrlRequest<ID>
 
-    abstract getData(fileId: ID): GetDataRequest<ID>
+    abstract getData(fileId: ID, optimistic: boolean): GetDataRequest<ID>
 
     abstract delete(fileId: ID): DeleteRequest
 }

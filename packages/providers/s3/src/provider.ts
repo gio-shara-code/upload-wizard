@@ -97,29 +97,30 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         }
     }
 
-    private async createFileUrls(fileId: ID): Promise<string[]> {
-        if (!this.configuration.optimisticFileDataResponse) {
-            const existingKeys = await this.buckets.resource.existingKeys(
-                fileId
-            )
-
-            if (existingKeys.length === 0) {
-                return []
-            } else {
-                return this.buckets.resource.getSignedDownloadUrls(
-                    fileId,
-                    existingKeys as unknown as S3ResourceBucketPath
-                )
-            }
+    private async createFileUrls(
+        fileId: ID,
+        optimistic: boolean
+    ): Promise<string[]> {
+        if (optimistic) {
+            return this.buckets.resource.getSignedDownloadUrls(fileId)
         }
 
-        return this.buckets.resource.getSignedDownloadUrls(fileId)
+        const existingKeys = await this.buckets.resource.existingKeys(fileId)
+
+        if (existingKeys.length > 0) {
+            return this.buckets.resource.getSignedDownloadUrls(
+                fileId,
+                existingKeys as unknown as S3ResourceBucketPath
+            )
+        }
+
+        return []
     }
 
-    async getData(fileId: ID): GetDataRequest<ID> {
+    async getData(fileId: ID, optimistic: boolean): GetDataRequest<ID> {
         // TODO: Refactor the file check
 
-        const variants = await this.createFileUrls(fileId)
+        const variants = await this.createFileUrls(fileId, optimistic)
 
         if (variants.length === 0) {
             return {
