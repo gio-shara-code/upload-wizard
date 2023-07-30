@@ -143,8 +143,7 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
 
         if (!optimistic && !this.buckets.upload.equals(this.buckets.resource)) {
             const existsInUploadBucket = await this.buckets.upload.keyExists(
-                this.buckets.upload.keyResolver.resolve(fileId),
-                {}
+                this.buckets.upload.keyResolver.resolve(fileId)
             )
 
             if (existsInUploadBucket) {
