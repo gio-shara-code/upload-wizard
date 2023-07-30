@@ -93,15 +93,6 @@ export interface S3ProviderConfiguration extends S3DefaultBucketConfiguration {
      * @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
      */
     acl?: ObjectCannedACL
-    /**
-     * Whether the file response should be optimistic or not.
-     *
-     * @default true
-     * @description If set to false it will make an additional request to the S3 API to check if the file exists.
-     * If the file does not exist, the `status` property of the response will be set to `NOT_FOUND`.
-     * If the file does exist, the `status` property of the response will be set to `PROCESSED`.
-     */
-    optimisticFileDataResponse?: boolean
 }
 
 export interface S3ProviderConfigurationParsed

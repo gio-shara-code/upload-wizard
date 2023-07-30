@@ -43,7 +43,6 @@ export class S3ProviderConfigurationParser {
                     bucketPath: z.array(z.string()).nonempty(),
                 }),
                 acl: z.nativeEnum(ObjectCannedACL),
-                optimisticFileDataResponse: z.boolean(),
             }
         )
 
@@ -86,8 +85,6 @@ export class S3ProviderConfigurationParser {
             ...s3DefaultBucketConfiguration,
             resourceBucket: s3DefaultResourceBucketConfiguration,
             acl: configuration.acl ?? ObjectCannedACL.bucket_owner_full_control,
-            optimisticFileDataResponse:
-                configuration.optimisticFileDataResponse ?? true,
         }
     }
 }

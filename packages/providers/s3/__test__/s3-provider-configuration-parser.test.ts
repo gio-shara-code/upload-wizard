@@ -28,7 +28,6 @@ describe('S3ProviderConfigurationParser', () => {
                 bucketPath: [bareMinimumConfig.bucketPath],
             },
             acl: ObjectCannedACL.bucket_owner_full_control,
-            optimisticFileDataResponse: true,
         })
     })
 

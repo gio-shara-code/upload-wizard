@@ -12,7 +12,12 @@ export abstract class StorageServiceProvider<ID> {
         expiresIn: ExpiresIn
     ): SignedUploadUrlRequest<ID>
 
-    abstract getData(fileId: ID): GetDataRequest<ID>
+    /**
+     *
+     * @param fileId
+     * @param optimistic If true, the provider will return the data without checking the existence of the file
+     */
+    abstract getData(fileId: ID, optimistic?: boolean): GetDataRequest<ID>
 
     abstract delete(fileId: ID): DeleteRequest
 }

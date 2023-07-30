@@ -76,7 +76,8 @@ export class UploadWizard<ID = DefaultID> {
 
     async getData(fileId: ID): Promise<MediaFile<ID>> {
         const { status, variants } = await this.storageServiceProvider.getData(
-            fileId
+            fileId,
+            true
         )
 
         if (status === FileStatus.NOT_FOUND) {

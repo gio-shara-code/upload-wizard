@@ -97,42 +97,43 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
         }
     }
 
-    private async createFileUrls(fileId: ID): Promise<string[]> {
-        if (!this.configuration.optimisticFileDataResponse) {
-            const existingKeys = await this.buckets.resource.existingKeys(
-                fileId
-            )
-
-            if (existingKeys.length === 0) {
-                return []
-            } else {
-                return this.buckets.resource.getSignedDownloadUrls(
-                    fileId,
-                    existingKeys as unknown as S3ResourceBucketPath
-                )
-            }
+    private async createFileUrls(
+        fileId: ID,
+        optimistic: boolean
+    ): Promise<string[]> {
+        if (optimistic) {
+            return this.buckets.resource.getSignedDownloadUrls(fileId)
         }
 
-        return this.buckets.resource.getSignedDownloadUrls(fileId)
+        const existingKeys = await this.buckets.resource.existingKeys(fileId)
+
+        if (existingKeys.length > 0) {
+            return this.buckets.resource.getSignedDownloadUrls(
+                fileId,
+                existingKeys as unknown as S3ResourceBucketPath
+            )
+        }
+
+        return []
     }
 
-    async getData(fileId: ID): GetDataRequest<ID> {
+    async getData(fileId: ID, optimistic = false): GetDataRequest<ID> {
         // TODO: Refactor the file check
 
-        const variants = await this.createFileUrls(fileId)
+        const variants = await this.createFileUrls(fileId, optimistic)
 
-        if (variants.length === 0) {
+        if (
+            variants.length ===
+            this.configuration.resourceBucket.bucketPath.length
+        ) {
             return {
                 id: fileId,
-                variants: [],
-                status: FileStatus.NOT_FOUND,
+                variants,
+                status: FileStatus.PROCESSED,
             }
         }
 
-        if (
-            variants.length !==
-            this.configuration.resourceBucket.bucketPath.length
-        ) {
+        if (variants.length > 0) {
             return {
                 id: fileId,
                 variants,
@@ -140,10 +141,24 @@ export class S3Provider<ID> extends StorageServiceProvider<ID> {
             }
         }
 
+        if (!optimistic && !this.buckets.upload.equals(this.buckets.resource)) {
+            const existsInUploadBucket = await this.buckets.upload.keyExists(
+                this.buckets.upload.keyResolver.resolve(fileId)
+            )
+
+            if (existsInUploadBucket) {
+                return {
+                    id: fileId,
+                    variants: [],
+                    status: FileStatus.UPLOADED,
+                }
+            }
+        }
+
         return {
             id: fileId,
-            variants,
-            status: FileStatus.PROCESSED,
+            variants: [],
+            status: FileStatus.NOT_FOUND,
         }
     }
 
