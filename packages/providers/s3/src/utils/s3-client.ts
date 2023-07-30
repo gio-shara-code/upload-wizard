@@ -38,11 +38,11 @@ export class S3Clients {
         }
     }
 
-    get uploadClient(): S3Client {
+    get upload(): S3Client {
         return this._uploadClient
     }
 
-    get resourceClient(): S3Client {
+    get resource(): S3Client {
         return this._resourceClient
     }
 }

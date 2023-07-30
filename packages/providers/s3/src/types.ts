@@ -1,5 +1,6 @@
 import { ObjectCannedACL } from '@aws-sdk/client-s3'
 import { z } from 'zod'
+import { S3ResourceBucket, S3UploadBucket } from './utils/s3-bucket'
 
 interface S3BucketConfiguration {
     bucketName?: string
@@ -118,3 +119,8 @@ export type S3ProviderConfigurationSchema = z.ZodSchema<
     z.ZodTypeDef,
     S3ProviderConfiguration
 >
+
+export interface Buckets<ID> {
+    upload: S3UploadBucket<ID>
+    resource: S3ResourceBucket<ID>
+}
