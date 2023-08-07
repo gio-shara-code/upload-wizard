@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import * as crypto from "crypto";
-import { uploadWizard } from "../../../../upload-wizard";
+import { uploadWizard } from '../../../../upload-wizard'
 
 export async function POST(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    console.log(process.env.AWS_ACCESS_KEY_ID)
-    const {id, url, confirmToken, expiry} = await uploadWizard.signedUploadUrl()
+    let response
+    try {
+        response = await uploadWizard.signedUploadUrl()
+    } catch (e) {
+        console.log('e', e)
+        return new Response('Internal server error', {
+            status: 500,
+        })
+    }
 
-
-    return NextResponse.json({
-        id,
-        confirmToken,
-        url,
-        expiry: expiry,
-    })
+    return NextResponse.json(response)
 }
