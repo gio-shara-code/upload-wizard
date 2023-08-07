@@ -1,7 +1,4 @@
-import {ReactNode} from "react";
+import { ReactNode } from 'react'
 
-export interface ButtonProps {
-    disabled?: boolean
-    children: ReactNode
-}
-
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
