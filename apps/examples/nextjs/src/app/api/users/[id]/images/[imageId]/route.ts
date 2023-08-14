@@ -16,7 +16,7 @@ export async function GET(
     { params }: { params: { id: string; imageId: string } }
 ) {
     // TODO: get image
-    await uploadWizard.getData(params.imageId)
+    const data = await uploadWizard.getData(params.imageId)
 
-    return NextResponse.json({})
+    return NextResponse.json(data)
 }
